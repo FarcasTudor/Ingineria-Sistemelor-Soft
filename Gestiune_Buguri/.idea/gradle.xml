@@ -9,6 +9,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/BugClientFX" />
+            <option value="$PROJECT_DIR$/BugModel" />
+            <option value="$PROJECT_DIR$/BugPersistence" />
+            <option value="$PROJECT_DIR$/BugService" />
           </set>
         </option>
       </GradleProjectSettings>

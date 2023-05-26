@@ -1,4 +1,4 @@
-package com.example.gestiune_buguri;
+package com.example.gestiune_buguri.controllers;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

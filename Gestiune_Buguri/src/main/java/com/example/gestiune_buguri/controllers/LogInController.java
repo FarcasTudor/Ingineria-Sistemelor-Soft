@@ -1,6 +1,5 @@
 package com.example.gestiune_buguri.controllers;
 
-import com.example.gestiune_buguri.HelloApplication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
