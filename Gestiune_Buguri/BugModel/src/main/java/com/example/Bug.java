@@ -1,24 +1,31 @@
 package com.example;
 
+import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.Entity;
 
-public class Bug extends Entity<Long>{
+
+@Entity
+@Table( name = "bug" )
+public class Bug extends com.example.Entity<Long>/*Entity<Long>*/{
+    private Long id;
     private String denumire;
     private String descriere;
-    private BugRisk risk;
-    private BugStatus status;
+    private String risk;
+    private String status;
 
     public Bug() {
         // this form used by Hibernate
     }
 
-    public Bug(String denumire, String descriere, BugRisk bugRisk, BugStatus bugStatus) {
+    public Bug(String denumire, String descriere, String bugRisk, String bugStatus) {
         this.denumire = denumire;
         this.descriere = descriere;
         this.risk = bugRisk;
         this.status = bugStatus;
     }
-
+    @Column(name = "denumire")
     public String getDenumire() {
         return denumire;
     }
@@ -27,6 +34,7 @@ public class Bug extends Entity<Long>{
         this.denumire = denumire;
     }
 
+    @Column(name = "descriere")
     public String getDescriere() {
         return descriere;
     }
@@ -35,19 +43,21 @@ public class Bug extends Entity<Long>{
         this.descriere = descriere;
     }
 
-    public BugRisk getBugRisk() {
+    @Column(name = "risk")
+    public String getBugRisk() {
         return risk;
     }
 
-    public void setBugRisk(BugRisk bugRisk) {
+    public void setBugRisk(String bugRisk) {
         this.risk = bugRisk;
     }
 
-    public BugStatus getBugStatus() {
+    @Column(name = "status")
+    public String getBugStatus() {
         return status;
     }
 
-    public void setBugStatus(BugStatus bugStatus) {
+    public void setBugStatus(String bugStatus) {
         this.status = bugStatus;
     }
 
@@ -71,5 +81,15 @@ public class Bug extends Entity<Long>{
                 ", bugRisk=" + risk +
                 ", bugStatus=" + status +
                 '}';
+    }
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long aLong) {
+        this.id = aLong;
     }
 }

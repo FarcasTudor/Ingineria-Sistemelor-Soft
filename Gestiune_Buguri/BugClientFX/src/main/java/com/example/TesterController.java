@@ -48,33 +48,46 @@ public class TesterController implements BugObserverInterface {
 
     public void initializeTable() throws Exception {
         comboBoxGradRisc.getItems().clear();
+        denumireTextField.clear();
+        descriereTextField.clear();
         initComboBox();
         System.out.println("initializeTable");
         List<Bug> bugs = service.getAllBugs(this);
-        // Sort by risk
-        bugs.sort(Comparator.comparing(Bug::getBugRisk).reversed());
-        // If risk is the same, sort by status
-        bugs.sort((o1, o2) -> {
-            if (o1.getBugRisk().equals(o2.getBugRisk())) {
-                return o1.getBugStatus().compareTo(o2.getBugStatus());
-            }
-            return 0;
-        });
+        bugs.sort(Comparator.comparingInt((Bug bug) -> getRiskValue(bug.getBugRisk())).reversed()
+                .thenComparing(bug -> getStatusValue(bug.getBugStatus())));
+
         tableBug.getItems().clear();
         bugsModel.setAll(bugs);
         columnDescriere.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescriere()));
         columnDenumire.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDenumire()));
-        columnGradRisc.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugRisk().toString()));
-        columnStatus.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugStatus().toString()));
+        columnGradRisc.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugRisk()));
+        columnStatus.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugStatus()));
         tableBug.setItems(bugsModel);
 
     }
+    private int getStatusValue(String status) {
+        return switch (status) {
+            case "NEW" -> 0;
+            case "SOLVED" -> 1;
+            default -> -1;
+        };
+    }
+
+    private int getRiskValue(String risk) {
+        return switch (risk) {
+            case "LOW" -> 0;
+            case "MEDIUM" -> 1;
+            case "HIGH" -> 2;
+            default -> -1;
+        };
+    }
+
     @FXML
     void onAdaugaBugClick(ActionEvent event) throws Exception {
         String denumire = denumireTextField.getText();
         String descriere = descriereTextField.getText();
-        BugRisk gradRisc = BugRisk.valueOf(comboBoxGradRisc.getValue().toString());
-        BugStatus status = BugStatus.NEW;
+        String gradRisc = comboBoxGradRisc.getValue().toString();
+        String status = BugStatus.NEW.toString();
         Bug bug = new Bug(denumire,descriere,gradRisc,status);
         service.addBug(bug, this);
         initializeTable();

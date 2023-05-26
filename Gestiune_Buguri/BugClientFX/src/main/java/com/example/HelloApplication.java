@@ -1,8 +1,6 @@
 package com.example;
 
-import com.example.databases.BugDB;
-import com.example.databases.ProgramatorDB;
-import com.example.databases.TesterDB;
+import com.example.databases.*;
 import com.example.interfaces.BugRepository;
 import com.example.interfaces.ProgramatorRepository;
 import com.example.interfaces.TesterRepository;
@@ -31,9 +29,12 @@ public class HelloApplication extends Application {
             System.out.println("Cannot find bd.config "+e);
         }
 
-        TesterRepository testerRepository = new TesterDB(props);
-        ProgramatorRepository programatorRepository = new ProgramatorDB(props);
-        BugRepository bugRepository = new BugDB(props);
+        // TesterRepository testerRepository = new TesterDB(props);
+        TesterRepository testerRepository = new TesterHibernateDB(props);
+        // ProgramatorRepository programatorRepository = new ProgramatorDB(props);
+        ProgramatorRepository programatorRepository = new ProgramatorHibernateDB(props);
+        // BugRepository bugRepository = new BugDB(props);
+        BugRepository bugRepository = new BugHibernateDB(props);
 
         Service service = new Service(testerRepository, programatorRepository, bugRepository);
 

@@ -38,8 +38,8 @@ public class BugDB implements BugRepository {
                 if(result.next()) {
                     String denumire = result.getString("denumire");
                     String descriere = result.getString("descriere");
-                    BugRisk risk = BugRisk.valueOf(result.getString("risk"));
-                    BugStatus status = BugStatus.valueOf(result.getString("status"));
+                    String risk = result.getString("risk");
+                    String status = result.getString("status");
                     Bug bug = new Bug(denumire, descriere, risk, status);
                     bug.setId(aLong);
                     logger.traceExit(bug);
@@ -67,8 +67,8 @@ public class BugDB implements BugRepository {
                     Long id = result.getLong("id");
                     String denumire = result.getString("denumire");
                     String descriere = result.getString("descriere");
-                    BugRisk risk = BugRisk.valueOf(result.getString("risk"));
-                    BugStatus status = BugStatus.valueOf(result.getString("status"));
+                    String risk = result.getString("risk");
+                    String status = result.getString("status");
                     Bug bug = new Bug(denumire, descriere, risk, status);
                     bug.setId(id);
                     bugs.add(bug);

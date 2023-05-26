@@ -1,8 +1,16 @@
 package com.example;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
-public class Programator extends Entity<Long> {
+@javax.persistence.Entity
+@Table( name = "programator" )
+public class Programator extends com.example.Entity<Long>/*Entity<Long>*/ {
+    private Long id;
     private String username;
     private String parola;
     private String functie;
@@ -61,4 +69,15 @@ public class Programator extends Entity<Long> {
                 ", functie='" + functie + '\'' +
                 '}';
     }
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long aLong) {
+        this.id = aLong;
+    }
+
 }

@@ -12,7 +12,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.ObjectStreamField;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ProgramatorController implements BugObserverInterface {
@@ -60,8 +63,8 @@ public class ProgramatorController implements BugObserverInterface {
         bugsModel.setAll(bugs);
         columnDescriere.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescriere()));
         columnDenumire.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDenumire()));
-        columnGradRisc.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugRisk().toString()));
-        columnStatus.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugStatus().toString()));
+        columnGradRisc.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugRisk()));
+        columnStatus.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBugStatus()));
         tableBug.setItems(bugsModel);
     }
     public void initializeTable() throws Exception {
@@ -73,6 +76,22 @@ public class ProgramatorController implements BugObserverInterface {
         initializeColumns(bugs);
     }
 
+    private int getStatusValue(String status) {
+        return switch (status) {
+            case "NEW" -> 0;
+            case "SOLVED" -> 1;
+            default -> -1;
+        };
+    }
+
+    private int getRiskValue(String risk) {
+        return switch (risk) {
+            case "LOW" -> 0;
+            case "MEDIUM" -> 1;
+            case "HIGH" -> 2;
+            default -> -1;
+        };
+    }
 
 
     public void onSelectCrescator(ActionEvent actionEvent) throws Exception {
@@ -80,12 +99,8 @@ public class ProgramatorController implements BugObserverInterface {
         checkboxDescrescator.setSelected(false);
         tableBug.getItems().clear();
         List<Bug> bugs = service.getAllBugs(this);
-        bugs.sort((o1, o2) -> {
-            if (o1.getBugRisk().equals(o2.getBugRisk())) {
-                return o1.getBugStatus().compareTo(o2.getBugStatus());
-            }
-            return o1.getBugRisk().compareTo(o2.getBugRisk());
-        });
+        bugs.sort(Comparator.comparingInt((Bug bug) -> getRiskValue(bug.getBugRisk()))
+                .thenComparing(bug -> getStatusValue(bug.getBugStatus())));
         initializeColumns(bugs);
     }
 
@@ -94,12 +109,8 @@ public class ProgramatorController implements BugObserverInterface {
         checkboxDescrescator.setSelected(true);
         tableBug.getItems().clear();
         List<Bug> bugs = service.getAllBugs(this);
-        bugs.sort((o1, o2) -> {
-            if (o1.getBugRisk().equals(o2.getBugRisk())) {
-                return o1.getBugStatus().compareTo(o2.getBugStatus());
-            }
-            return o2.getBugRisk().compareTo(o1.getBugRisk());
-        });
+        bugs.sort(Comparator.comparingInt((Bug bug) -> getRiskValue(bug.getBugRisk())).reversed()
+                .thenComparing(bug -> getStatusValue(bug.getBugStatus())));
         initializeColumns(bugs);
     }
 
@@ -114,7 +125,7 @@ public class ProgramatorController implements BugObserverInterface {
                 return;
             }
             Bug bug = tableBug.getSelectionModel().getSelectedItem();
-            if(bug.getBugStatus() == BugStatus.SOLVED){
+            if(Objects.equals(bug.getBugStatus(), BugStatus.SOLVED.toString())){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Error");
@@ -132,7 +143,7 @@ public class ProgramatorController implements BugObserverInterface {
                 return;
             }
             if (checkboxDa.isSelected()) {
-                bug.setBugStatus(BugStatus.SOLVED);
+                bug.setBugStatus(BugStatus.SOLVED.toString());
             }
             service.updateBug(bug, this);
             initializeTable();
@@ -144,17 +155,28 @@ public class ProgramatorController implements BugObserverInterface {
     private boolean checkHighestRisk(Bug bug) throws Exception {
 
         List<Bug> bugs = service.getAllBugs(this);
-        List<Bug> newBugs = bugs.stream().filter(bug1 -> bug1.getBugStatus().equals(BugStatus.NEW))
+        List<Bug> newBugs = bugs.stream().filter(bug1 -> bug1.getBugStatus().equals(BugStatus.NEW.toString()))
                 .toList();
         BugRisk highestRisk = BugRisk.LOW;
+        BugRisk bugRisk = null;
         for(Bug b : newBugs) {
-            if (b.getBugRisk().compareTo(highestRisk) > 0) {
-                highestRisk = b.getBugRisk();
+            if(Objects.equals(b.getBugRisk(), "LOW")){
+                bugRisk = BugRisk.valueOf("LOW");
+            }
+            else {
+                if (Objects.equals(b.getBugRisk(), "MEDIUM")) {
+                    bugRisk = BugRisk.valueOf("MEDIUM");
+                } else {
+                    bugRisk = BugRisk.valueOf("HIGH");
+                }
+            }
+            if (bugRisk.compareTo(highestRisk) > 0) {
+                highestRisk = bugRisk;
             }
         }
         System.out.println("Highest risk: " + highestRisk);
         System.out.println("Bug risk: " + bug.getBugRisk());
-        return bug.getBugRisk() == highestRisk;
+        return Objects.equals(bug.getBugRisk(), highestRisk.toString());
     }
 
     public void onSelectNu(ActionEvent actionEvent) {
