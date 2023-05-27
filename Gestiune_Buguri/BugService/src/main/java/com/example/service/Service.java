@@ -122,4 +122,10 @@ public class Service implements BugServiceInterface {
             throw new Exception("Programator not logged in.");
         }
     }
+
+    @Override
+    public void deleteBug(Bug bug, BugObserverInterface client) {
+        bugRepository.delete(bug.getId());
+        notifyClients();
+    }
 }

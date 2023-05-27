@@ -112,6 +112,27 @@ public class BugHibernateDB implements BugRepository {
 
     @Override
     public Bug delete(Long aLong) {
+        initialize();
+        try(Session session = sessionFactory.openSession()) {
+            Transaction tx = null;
+            try {
+                tx = session.beginTransaction();
+                Bug bug = session.createQuery("from Bug where id = :id", Bug.class)
+                        .setParameter("id", aLong)
+                        .setMaxResults(1)
+                        .uniqueResult();
+                session.delete(bug);
+                tx.commit();
+                return bug;
+            } catch (RuntimeException ex) {
+                if (tx != null)
+                    tx.rollback();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
         return null;
     }
 

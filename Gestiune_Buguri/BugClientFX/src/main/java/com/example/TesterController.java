@@ -17,7 +17,14 @@ import java.util.List;
 
 public class TesterController implements BugObserverInterface {
 
-
+    @FXML
+    private Button adaugaBugButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private CheckBox checkBoxDa;
+    @FXML
+    private Button stergereBugButton;
     @FXML
     private TableColumn<Bug, String> columnDenumire;
     @FXML
@@ -122,5 +129,37 @@ public class TesterController implements BugObserverInterface {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void onCheckBoxDaClicked(ActionEvent actionEvent) {
+
+    }
+
+    public void onStergereBugButtonClicked(ActionEvent actionEvent) {
+        Bug bug = tableBug.getSelectionModel().getSelectedItem();
+        try {
+            if (checkBoxDa.isSelected()) {
+                if(bug.getBugStatus().equals("SOLVED")) {
+                    service.deleteBug(bug, this);
+                    initializeTable();
+                    System.out.println("BUG STERS CU SUCCES");
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setContentText("Nu poti sterge decat buguri rezolvate");
+                    alert.showAndWait();
+                }
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("Nu ai bifat casuta");
+                alert.showAndWait();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

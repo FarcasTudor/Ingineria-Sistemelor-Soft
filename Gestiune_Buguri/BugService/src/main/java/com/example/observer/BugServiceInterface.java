@@ -18,4 +18,6 @@ public interface BugServiceInterface {
     void logoutTester(Tester tester, BugObserverInterface client) throws Exception;
 
     void logoutProgramator(Programator programator, BugObserverInterface client) throws Exception;
+
+    void deleteBug(Bug bug, BugObserverInterface client);
 }
