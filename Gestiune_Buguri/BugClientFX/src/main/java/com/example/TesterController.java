@@ -131,9 +131,6 @@ public class TesterController implements BugObserverInterface {
         });
     }
 
-    public void onCheckBoxDaClicked(ActionEvent actionEvent) {
-
-    }
 
     public void onStergereBugButtonClicked(ActionEvent actionEvent) {
         Bug bug = tableBug.getSelectionModel().getSelectedItem();
@@ -161,5 +158,9 @@ public class TesterController implements BugObserverInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void onCheckBoxDaClicked(ActionEvent actionEvent) {
+
     }
 }
