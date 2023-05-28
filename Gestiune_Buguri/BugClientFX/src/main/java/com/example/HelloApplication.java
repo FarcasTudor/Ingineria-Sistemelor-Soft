@@ -45,12 +45,12 @@ public class HelloApplication extends Application {
         LogInController logInController = fxmlLoader.getController();
         logInController.setService(service);
 
-        FXMLLoader programatorLoader = new FXMLLoader(HelloApplication.class.getResource("/Programator.fxml"));
+        FXMLLoader programatorLoader = new FXMLLoader(HelloApplication.class.getResource("/ProgramatorWindow.fxml"));
         Parent programatorRoot = programatorLoader.load();
         ProgramatorController programatorController = programatorLoader.getController();
         programatorController.setService(service);
 
-        FXMLLoader testerLoader = new FXMLLoader(HelloApplication.class.getResource("/Tester.fxml"));
+        FXMLLoader testerLoader = new FXMLLoader(HelloApplication.class.getResource("/TesterWindow.fxml"));
         Parent testerRoot = testerLoader.load();
         TesterController testerController = testerLoader.getController();
         testerController.setService(service);
